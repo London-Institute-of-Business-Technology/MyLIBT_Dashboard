@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import AppBar from '../components/AppBar';
@@ -7,11 +7,12 @@ import Footer from "../components/Footer";
 import Container from '@mui/material/Container';
 import { makeStyles } from '@mui/styles';
 import Profile from "./profile";
+import Invoce from "./invoice";
 import { Typography } from "@mui/material";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 // Tab Pannel Function Starts
@@ -27,7 +28,7 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
+                <Box sx={{ pt: 3, pb: 3, pl: 0, pr: 0 }}>
                     <Typography>{children}</Typography>
                 </Box>
             )}
@@ -51,7 +52,7 @@ function a11yProps(index) {
 
 export default function Home() {
     const [value, setValue] = React.useState(0);
-    const accessToken = "test"
+
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -62,39 +63,6 @@ export default function Home() {
 
     const [loading, setLoading] = useState(false);
 
-    const createXeroContact = async () => {
-        try {
-            setLoading(true);
-            const { email, name } = user;
-            const response = await axios.post(
-                'https://api.xero.com/api.xro/2.0/Contacts',
-                {
-                    Contacts: [
-                        {
-                            Name: name,
-                            EmailAddress: email,
-                            ContactNumber: '+123456789',
-                        },
-                    ],
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
-            );
-            console.log(response.data);
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-            setLoading(false);
-        }
-    };
-
-    if (isAuthenticated && !loading) {
-        createXeroContact();
-    }
-
 
     return (
 
@@ -103,7 +71,16 @@ export default function Home() {
             <Container maxWidth="lg">
                 <div className={classes.centeredContainer} >
                     {
-                        isLoading ? 'Loading' :
+                        isLoading ?
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginTop: '35px'
+                            }}>
+                                <CircularProgress />
+                            </div> :
                             isAuthenticated ?
                                 <>
                                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -127,7 +104,7 @@ export default function Home() {
                                         <Profile />
                                     </TabPanel>
                                     <TabPanel value={value} index={2}>
-                                        <Typography variant="h2">Invoices</Typography>
+                                        <Invoce />
                                     </TabPanel>
 
                                 </>
