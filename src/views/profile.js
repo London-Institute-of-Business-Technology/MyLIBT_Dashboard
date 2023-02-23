@@ -3,9 +3,6 @@ import React, { useEffect } from "react";
 
 
 const Profile = () => {
-    useEffect(() => {
-        console.log(user.app_metadata);
-    }, [])
     const { user, isAuthenticated, isLoading } = useAuth0();
 
     if (isLoading) {
@@ -24,7 +21,7 @@ const Profile = () => {
                     alt={user.name} />
                 <h2>{user.name}</h2>
                 <p>{user.email}</p>
-                <ul>
+                {/* <ul>
                     {
                         Object.keys(user).map((objkey, i) => (
                             <li key={i}>
@@ -32,7 +29,7 @@ const Profile = () => {
                             </li>
                         ))
                     }
-                </ul>
+                </ul> */}
 
 
             </div>
