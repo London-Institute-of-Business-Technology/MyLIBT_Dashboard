@@ -14,6 +14,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
 import { BASE_URL } from '../contants/baseUrl';
 import { Typography } from "@mui/material";
+import { BorderColor } from "@mui/icons-material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -156,12 +157,12 @@ const Invoice = () => {
                                     <StyledTableCell align="left">
                                         {moment(row.DueDate).format("DD/MM/YYYY")}
                                         <br />
-                                        {moment(row.DueDate).valueOf() - new Date().getTime() < 0 ?
+                                        {row.AmountDue == 0 ? <Typography variant="caption" className={classes.paidText}>Paid</Typography> : moment(row.DueDate).valueOf() - new Date().getTime() < 0 ?
                                             <Typography variant="caption" style={{ color: 'red', }}>
                                                 Overdue by {moment(new Date()).diff(moment(row.DueDate), 'days')} days
                                             </Typography >
-                                            : ''
-                                        }
+                                            : ''}
+
                                     </StyledTableCell>
                                     <StyledTableCell align="left">
                                         <div style={{ color: row.AmountDue == 0 ? '#57c40a' : 'red', fontWeight: '500' }}>
@@ -228,7 +229,10 @@ const useStyles = makeStyles({
             background: '#0a1c3d !important',
         }
     },
-
+    paidText: {
+        background: '#d8ffbd',
+        padding: '3px 5px'
+    }
 });
 
 export default Invoice;
