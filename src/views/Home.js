@@ -93,15 +93,15 @@ export default function Home() {
                                             aria-label="basic tabs example"
                                         >
                                             <Tab label="Dashboard" {...a11yProps(0)} />
-                                            <Tab label="Profile" {...a11yProps(1)} />
+                                            <Tab label="Courses" {...a11yProps(1)} />
                                             <Tab label="Invoices" {...a11yProps(2)} />
                                         </Tabs>
                                     </Box>
                                     <TabPanel value={value} index={0}>
-                                        <Typography variant="h2">Dashboard</Typography>
+                                        <Typography variant="h6">Dashboard</Typography>
                                     </TabPanel>
                                     <TabPanel value={value} index={1}>
-                                        <Profile />
+                                        <Typography variant="h6">Courses</Typography>
                                     </TabPanel>
                                     <TabPanel value={value} index={2}>
                                         <Invoce />

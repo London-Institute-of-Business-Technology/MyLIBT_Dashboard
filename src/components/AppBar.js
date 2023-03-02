@@ -24,6 +24,7 @@ import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import LoginButton from '../views/login';
 import LogoutButton from '../views/logout';
+import MainMenu from './mainMenu';
 
 const pages = [];
 
@@ -63,33 +64,10 @@ export default function ResponsiveAppBar() {
             <div className={classes.topBar}>
                 <Container maxWidth="lg" style={{ padding: '0 2%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                     <div className={classes.flexHr}>
-                        <a href="mailto:enquiries@libt.co.uk" className={classes.externalLink}>
+                        {/* <a href="mailto:enquiries@libt.co.uk" className={classes.externalLink}>
                             <EmailOutlinedIcon fontSize='small' />
                             <Span sx={{ display: { xs: 'none', md: 'flex' }, ml: 1 }} >enquiries@libt.co.uk</Span>
-                        </a>
-                    </div>
-
-                </Container>
-
-            </div>
-            <AppBar position="static" elevation={0}>
-
-                <Container maxWidth="lg" style={{ padding: '10px 35px 10px 20px' }}>
-                    <Toolbar disableGutters>
-                        {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-                        <Div sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}>
-                            {/* <Link to='/'> */}
-                            <img src={MainLogo} alt='LIBT' style={{ maxWidth: '110px' }} />
-                            {/* </Link> */}
-                        </Div>
-
-                        {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
-                        <Div sx={{ display: { xs: 'flex', md: 'none' }, mr: 2, justifyContent: 'flex-start', flexGrow: 1 }}>
-                            {/* <Link to='/'> */}
-                            <img src={MainLogo} alt='LIBT' style={{ maxWidth: '60px' }} />
-                            {/* </Link> */}
-                        </Div>
-
+                        </a> */}
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                             {pages.map((page) => (
                                 <Button
@@ -110,8 +88,8 @@ export default function ResponsiveAppBar() {
                                             <IconButton
                                                 onClick={handleOpenUserMenu} sx={{ p: 0 }}
                                             >
-                                                <Avatar className={classes.userAvatar} alt={user.name} src={user.picture} />
-                                                <Typography className={classes.userName}>{user.nickname}</Typography>
+                                                <Avatar sx={{ width: 24, height: 24 }} className={classes.userAvatar} alt={user.name} src={user.picture} />
+                                                <Typography variant="subtitle1" className={classes.userName}>{user.nickname.charAt(0).toUpperCase() + user.nickname.slice(1)}</Typography>
                                             </IconButton>
                                             <Menu
                                                 sx={{ mt: '45px' }}
@@ -129,10 +107,16 @@ export default function ResponsiveAppBar() {
                                                 open={Boolean(anchorElUser)}
                                                 onClose={handleCloseUserMenu}
                                             >
-
+                                                <MenuItem onClick={handleCloseUserMenu}>
+                                                    <Link className={classes.styledLink} to="/">Dashboard</Link>
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseUserMenu}>
+                                                    <Link className={classes.styledLink} to="/profile">My Profile</Link>
+                                                </MenuItem>
                                                 <MenuItem onClick={handleCloseUserMenu}>
                                                     <LogoutButton />
                                                 </MenuItem>
+
 
 
                                             </Menu></> :
@@ -141,6 +125,29 @@ export default function ResponsiveAppBar() {
                             }
 
                         </Box>
+                    </div>
+
+                </Container>
+
+            </div>
+            <AppBar position="static" elevation={0}>
+
+                <Container maxWidth="lg" sx={{ padding: { md: '10px 35px 10px 20px', sm: '10px 20px 10px 20px', xs: '10px 15px 10px 15px' } }}>
+                    <Toolbar disableGutters>
+                        {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
+                        <Div sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}>
+                            {/* <Link to='/'> */}
+                            <img src={MainLogo} alt='LIBT' style={{ maxWidth: '110px' }} />
+                            {/* </Link> */}
+                        </Div>
+
+                        {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
+                        <Div sx={{ display: { xs: 'flex', md: 'none' }, mr: 2, justifyContent: 'flex-start', flexGrow: 1 }}>
+                            {/* <Link to='/'> */}
+                            <img src={MainLogo} alt='LIBT' style={{ maxWidth: '60px' }} />
+                            {/* </Link> */}
+                        </Div>
+                        <MainMenu />
                     </Toolbar>
                 </Container>
             </AppBar>
@@ -191,10 +198,14 @@ const useStyles = makeStyles({
         }
     },
     userName: {
-        color: '#fff',
+        color: '#000',
 
     },
     userAvatar: {
         marginRight: '10px'
+    },
+    styledLink: {
+        textDecoration: 'none',
+        color: 'rgba(0, 0, 0, 0.87)'
     }
 });
