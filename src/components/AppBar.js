@@ -89,7 +89,7 @@ export default function ResponsiveAppBar() {
                                                 onClick={handleOpenUserMenu} sx={{ p: 0 }}
                                             >
                                                 <Avatar sx={{ width: 24, height: 24 }} className={classes.userAvatar} alt={user.name} src={user.picture} />
-                                                <Typography variant="subtitle1" className={classes.userName}>{user.nickname.charAt(0).toUpperCase() + user.nickname.slice(1)}</Typography>
+                                                <Typography variant="subtitle2" className={classes.userName}>{user.nickname.charAt(0).toUpperCase() + user.nickname.slice(1)}</Typography>
                                             </IconButton>
                                             <Menu
                                                 sx={{ mt: '45px' }}
@@ -198,7 +198,8 @@ const useStyles = makeStyles({
         }
     },
     userName: {
-        color: '#000',
+        color: '#0a1c3d',
+        fontSize: '12px !important'
 
     },
     userAvatar: {

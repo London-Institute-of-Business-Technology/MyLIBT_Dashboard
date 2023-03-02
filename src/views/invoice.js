@@ -145,7 +145,10 @@ const Invoice = () => {
                                         {row.InvoiceNumber}
                                     </StyledTableCell>
                                     <StyledTableCell align="left">
-                                        <b>{row.LineItems[0].Item.Name}</b>
+                                        <b>{
+                                            row.LineItems[0].Item == undefined ? 'Loading' :
+                                                row.LineItems[0].Item.Name
+                                        }</b>
                                         <br />
                                         {row.LineItems[0].Description}
                                     </StyledTableCell>
@@ -166,11 +169,11 @@ const Invoice = () => {
                                         </div>
                                     </StyledTableCell>
                                     <StyledTableCell align="left">
-                                        {row.AmountDue === 0 ? (
+                                        {row.AmountDue == 0 ? (
                                             <Button
                                                 size="small"
                                                 variant="contained"
-                                                style={{ minWidth: '94px' }}
+
                                                 onClick={() => { payNowLink(row.InvoiceID) }}
                                                 sx={{ boxShadow: 0 }}
                                                 className={classes.downloadButton}
@@ -180,7 +183,6 @@ const Invoice = () => {
                                             <Button
                                                 size="small"
                                                 variant="contained"
-                                                style={{ minWidth: '94px' }}
                                                 onClick={() => { payNowLink(row.InvoiceID) }}
                                                 sx={{ boxShadow: 0 }}
                                                 className={classes.payButton}
@@ -208,20 +210,22 @@ const Invoice = () => {
 
 const useStyles = makeStyles({
     payButton: {
-        background: '#3f8111',
+        background: '#3f8111 !important',
+        minWidth: '94px !important',
         borderRadius: '0px !important',
         "&:hover": {
-            //you want this to be the same as the backgroundColor above
-            boxShadow: 'none !important'
+            boxShadow: 'none !important',
+            background: '#0a1c3d !important',
         }
     },
 
     downloadButton: {
-        background: '#eca107',
+        background: '#eca107 !important',
+        minWidth: '94px !important',
         borderRadius: '0px !important',
         "&:hover": {
-            //you want this to be the same as the backgroundColor above
-            boxShadow: 'none !important'
+            boxShadow: 'none !important',
+            background: '#0a1c3d !important',
         }
     },
 
