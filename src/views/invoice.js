@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect, useState } from "react";
 import moment from 'moment';
+import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,6 +12,8 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
+import { BASE_URL } from '../contants/baseUrl';
+import { Typography } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -34,11 +37,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 const Invoice = () => {
+    const classes = useStyles();
     const [isLoadingInv, setIsLoadingInv] = useState(false);
     const [isPayLink, setIsPayLink] = useState(false);
     const [invoices, setInvoices] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(2);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
 
     //Get Invoices for logged user
@@ -47,7 +51,7 @@ const Invoice = () => {
         console.log('user emailllll')
         const { email } = user;
         console.log(email + 'user emailllllafter login')
-        fetch(`http://localhost:3000/api/xero/invoice?email=${email}`, {
+        fetch(`${BASE_URL}/api/xero/invoice?email=${email}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -71,7 +75,7 @@ const Invoice = () => {
     const payNowLink = (slectedInvoiceId) => {
         console.log(slectedInvoiceId);
         setIsPayLink(true)
-        fetch(`http://localhost:3000/api/xero/paylink?invoiceId=${slectedInvoiceId}`, {
+        fetch(`${BASE_URL}/api/xero/paylink?invoiceId=${slectedInvoiceId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -130,6 +134,7 @@ const Invoice = () => {
                                 <StyledTableCell align="left">Item / description</StyledTableCell>
                                 <StyledTableCell align="left">Total Amount</StyledTableCell>
                                 <StyledTableCell align="left">Due Date</StyledTableCell>
+                                <StyledTableCell align="left">Due Amount</StyledTableCell>
                                 <StyledTableCell align="left">Pay Invoice</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -144,25 +149,51 @@ const Invoice = () => {
                                         <br />
                                         {row.LineItems[0].Description}
                                     </StyledTableCell>
-                                    <StyledTableCell align="left">{row.Total} {row.CurrencyCode}</StyledTableCell>
-                                    <StyledTableCell align="left">{moment(row.DueDate).format("DD/MM/YYYY")}</StyledTableCell>
+                                    <StyledTableCell align="left"><div style={{ color: '#397d09', fontWeight: '500' }}>{row.Total} {row.CurrencyCode}</div></StyledTableCell>
                                     <StyledTableCell align="left">
-                                        <Button
-                                            size="small"
-                                            variant="contained"
-                                            style={{ background: '#57c40a', borderRadius: '0px' }}
-                                            onClick={() => { payNowLink(row.InvoiceID) }}
-                                            sx={{ boxShadow: 0 }}
-                                        >
-                                            Pay Now
-                                        </Button>
+                                        {moment(row.DueDate).format("DD/MM/YYYY")}
+                                        <br />
+                                        {moment(row.DueDate).valueOf() - new Date().getTime() < 0 ?
+                                            <Typography variant="caption" style={{ color: 'red', }}>
+                                                Overdue by {moment(new Date()).diff(moment(row.DueDate), 'days')} days
+                                            </Typography >
+                                            : ''
+                                        }
+                                    </StyledTableCell>
+                                    <StyledTableCell align="left">
+                                        <div style={{ color: row.AmountDue == 0 ? '#57c40a' : 'red', fontWeight: '500' }}>
+                                            {row.AmountDue} {row.CurrencyCode}
+                                        </div>
+                                    </StyledTableCell>
+                                    <StyledTableCell align="left">
+                                        {row.AmountDue === 0 ? (
+                                            <Button
+                                                size="small"
+                                                variant="contained"
+                                                style={{ minWidth: '94px' }}
+                                                onClick={() => { payNowLink(row.InvoiceID) }}
+                                                sx={{ boxShadow: 0 }}
+                                                className={classes.downloadButton}
+                                            >Download</Button>
+                                        ) : (
+
+                                            <Button
+                                                size="small"
+                                                variant="contained"
+                                                style={{ minWidth: '94px' }}
+                                                onClick={() => { payNowLink(row.InvoiceID) }}
+                                                sx={{ boxShadow: 0 }}
+                                                className={classes.payButton}
+                                            >Pay Now</Button>
+                                        )}
+
                                     </StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
                     </Table>
                     <TablePagination
-                        rowsPerPageOptions={[2, 5, 10]}
+                        rowsPerPageOptions={[5, 10, 15]}
                         component="div"
                         count={invoices.length}
                         rowsPerPage={rowsPerPage}
@@ -174,5 +205,26 @@ const Invoice = () => {
         )
     );
 };
+
+const useStyles = makeStyles({
+    payButton: {
+        background: '#3f8111',
+        borderRadius: '0px !important',
+        "&:hover": {
+            //you want this to be the same as the backgroundColor above
+            boxShadow: 'none !important'
+        }
+    },
+
+    downloadButton: {
+        background: '#eca107',
+        borderRadius: '0px !important',
+        "&:hover": {
+            //you want this to be the same as the backgroundColor above
+            boxShadow: 'none !important'
+        }
+    },
+
+});
 
 export default Invoice;
