@@ -14,7 +14,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from '@mui/material/TablePagination';
 import { BASE_URL } from '../contants/baseUrl';
 import { Typography } from "@mui/material";
-import { BorderColor } from "@mui/icons-material";
+import Alert from '@mui/material/Alert';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -44,6 +44,7 @@ const Invoice = () => {
     const [invoices, setInvoices] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [isContact, setIsContact] = useState(false)
 
 
     //Get Invoices for logged user
@@ -52,13 +53,29 @@ const Invoice = () => {
         console.log('user emailllll')
         const { email } = user;
         console.log(email + 'user emailllllafter login')
+        setIsContact(false)
         fetch(`${BASE_URL}/api/xero/invoice?email=${email}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                console.log(response)
+                if (response.status == 404) {
+                    console.log('error404')
+                    setIsContact(true);
+                    setIsLoadingInv(false);
+
+                } else if (response.status == 406) {
+                    console.log('error 406')
+                } else if (response.status == 500) {
+                    console.log('error 500')
+                } else {
+                    console.log(response)
+                    response.json()
+                }
+            })
             .then(data => {
                 // handle response data
                 console.log(data.Invoices);
@@ -127,84 +144,85 @@ const Invoice = () => {
                     <CircularProgress />
                 </div>
                 :
-                <TableContainer>
-                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell>Invoice No</StyledTableCell>
-                                <StyledTableCell align="left">Item / description</StyledTableCell>
-                                <StyledTableCell align="left">Total Amount</StyledTableCell>
-                                <StyledTableCell align="left">Due Date</StyledTableCell>
-                                <StyledTableCell align="left">Due Amount</StyledTableCell>
-                                <StyledTableCell align="left">Pay Invoice</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {invoices.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                                <StyledTableRow key={row.InvoiceID}>
-                                    <StyledTableCell component="th" scope="row">
-                                        {row.InvoiceNumber}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        <b>{
-                                            row.LineItems[0].Item == undefined ? 'Loading' :
-                                                row.LineItems[0].Item.Name
-                                        }</b>
-                                        <br />
-                                        {row.LineItems[0].Description}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left"><div style={{ color: '#397d09', fontWeight: '500' }}>{row.Total} {row.CurrencyCode}</div></StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {moment(row.DueDate).format("DD/MM/YYYY")}
-                                        <br />
-                                        {row.AmountDue == 0 ? <Typography variant="caption" className={classes.paidText}>Paid</Typography> : moment(row.DueDate).valueOf() - new Date().getTime() < 0 ?
-                                            <Typography variant="caption" style={{ color: 'red', }}>
-                                                Overdue by {moment(new Date()).diff(moment(row.DueDate), 'days')} days
-                                            </Typography >
-                                            : ''}
+                isContact ? <Alert severity="warning">No contact found for <b>{user.email}</b>. Please contact admin staff for more details.</Alert> :
+                    <TableContainer>
+                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Invoice No</StyledTableCell>
+                                    <StyledTableCell align="left">Item / description</StyledTableCell>
+                                    <StyledTableCell align="left">Total Amount</StyledTableCell>
+                                    <StyledTableCell align="left">Due Date</StyledTableCell>
+                                    <StyledTableCell align="left">Due Amount</StyledTableCell>
+                                    <StyledTableCell align="left">Pay Invoice</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {invoices.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                                    <StyledTableRow key={row.InvoiceID}>
+                                        <StyledTableCell component="th" scope="row">
+                                            {row.InvoiceNumber}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            <b>{
+                                                row.LineItems[0].Item == undefined ? 'Loading' :
+                                                    row.LineItems[0].Item.Name
+                                            }</b>
+                                            <br />
+                                            {row.LineItems[0].Description}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left"><div style={{ color: '#397d09', fontWeight: '500' }}>{row.Total} {row.CurrencyCode}</div></StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            {moment(row.DueDate).format("DD/MM/YYYY")}
+                                            <br />
+                                            {row.AmountDue == 0 ? <Typography variant="caption" className={classes.paidText}>Paid</Typography> : moment(row.DueDate).valueOf() - new Date().getTime() < 0 ?
+                                                <Typography variant="caption" style={{ color: 'red', }}>
+                                                    Overdue by {moment(new Date()).diff(moment(row.DueDate), 'days')} days
+                                                </Typography >
+                                                : ''}
 
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        <div style={{ color: row.AmountDue == 0 ? '#57c40a' : 'red', fontWeight: '500' }}>
-                                            {row.AmountDue} {row.CurrencyCode}
-                                        </div>
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {row.AmountDue == 0 ? (
-                                            <Button
-                                                size="small"
-                                                variant="contained"
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            <div style={{ color: row.AmountDue == 0 ? '#57c40a' : 'red', fontWeight: '500' }}>
+                                                {row.AmountDue} {row.CurrencyCode}
+                                            </div>
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            {row.AmountDue == 0 ? (
+                                                <Button
+                                                    size="small"
+                                                    variant="contained"
 
-                                                onClick={() => { payNowLink(row.InvoiceID) }}
-                                                sx={{ boxShadow: 0 }}
-                                                className={classes.downloadButton}
-                                            >Download</Button>
-                                        ) : (
+                                                    onClick={() => { payNowLink(row.InvoiceID) }}
+                                                    sx={{ boxShadow: 0 }}
+                                                    className={classes.downloadButton}
+                                                >Download</Button>
+                                            ) : (
 
-                                            <Button
-                                                size="small"
-                                                variant="contained"
-                                                onClick={() => { payNowLink(row.InvoiceID) }}
-                                                sx={{ boxShadow: 0 }}
-                                                className={classes.payButton}
-                                            >Pay Now</Button>
-                                        )}
+                                                <Button
+                                                    size="small"
+                                                    variant="contained"
+                                                    onClick={() => { payNowLink(row.InvoiceID) }}
+                                                    sx={{ boxShadow: 0 }}
+                                                    className={classes.payButton}
+                                                >Pay Now</Button>
+                                            )}
 
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 15]}
-                        component="div"
-                        count={invoices.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </TableContainer>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 15]}
+                            component="div"
+                            count={invoices.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </TableContainer>
         )
     );
 };
