@@ -73,7 +73,7 @@ const Invoice = () => {
                     console.log('error 500')
                 } else {
                     console.log(response)
-                    response.json()
+                    return response.json()
                 }
             })
             .then(data => {
@@ -229,7 +229,7 @@ const Invoice = () => {
 
 const useStyles = makeStyles({
     payButton: {
-        background: '#3f8111 !important',
+        background: '#eca107 !important',
         minWidth: '94px !important',
         borderRadius: '0px !important',
         "&:hover": {
@@ -239,7 +239,7 @@ const useStyles = makeStyles({
     },
 
     downloadButton: {
-        background: '#eca107 !important',
+        background: '#3f8111 !important',
         minWidth: '94px !important',
         borderRadius: '0px !important',
         "&:hover": {
