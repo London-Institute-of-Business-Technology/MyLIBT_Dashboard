@@ -3,6 +3,10 @@ import React, { useEffect, useState } from "react";
 import AppBar from '../components/AppBar';
 import Footer from "../components/Footer";
 import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import axios from "axios";
 
 const Profile = () => {
@@ -63,13 +67,26 @@ const Profile = () => {
                 </ul> */}
 
                         <form onSubmit={handleSubmit}>
-                            <input type="text" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
-                            <button type="submit">Submit</button>
+                            <div style={{ display: 'flex', flexDirection: "row", marginBottom: '15px' }}>
+                                <TextField style={{ marginRight: '10px' }} id="outlined-basic" label="Type a job title" variant="outlined" type="text" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+                                <Button
+                                    variant="outlined"
+                                    type="submit"
+                                    disabled={prompt == '' ? true : false}
+                                >
+                                    Show Books
+                                </Button>
+                            </div>
                         </form>
                         {isLoadingBooks ? 'Loading' : recommendations.map((item) => (
                             <>
-                                <div>{item.title}</div>
-                                <a href={item.amazon_link}>{item.amazon_link}</a>
+                                <div style={{ marginBottom: '15px' }}>
+                                    <Alert icon={<AutoStoriesIcon fontSize="inherit" />} severity="info">
+                                        <div style={{ fontWeight: 'bold' }}>{item.title}</div>
+                                        <a target="_blank" href={item.amazon_link || item.amazonLink}>{item.amazon_link}</a>
+                                    </Alert>
+
+                                </div>
                             </>
 
                         ))}

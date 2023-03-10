@@ -8,6 +8,7 @@ import Container from '@mui/material/Container';
 import { makeStyles } from '@mui/styles';
 import Profile from "./profile";
 import Invoce from "./invoice";
+import Courses from './courses';
 import { Typography } from "@mui/material";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -101,7 +102,7 @@ export default function Home() {
                                         <Typography variant="h6">Dashboard</Typography>
                                     </TabPanel>
                                     <TabPanel value={value} index={1}>
-                                        <Typography variant="h6">Courses</Typography>
+                                        <Courses />
                                     </TabPanel>
                                     <TabPanel value={value} index={2}>
                                         <Invoce />
