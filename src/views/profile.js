@@ -83,7 +83,8 @@ const Profile = () => {
                                 <div style={{ marginBottom: '15px' }}>
                                     <Alert icon={<AutoStoriesIcon fontSize="inherit" />} severity="info">
                                         <div style={{ fontWeight: 'bold' }}>{item.title}</div>
-                                        <a target="_blank" href={item.amazon_link || item.amazonLink}>{item.amazon_link}</a>
+                                        <a target="_blank" href={item.amazon_link}>{item.amazon_link}</a>
+                                        <a target="_blank" href={item.amazonLink}>{item.amazonLink}</a>
                                     </Alert>
 
                                 </div>
