@@ -60,10 +60,11 @@ const Invoice = () => {
                 'Content-Type': 'application/json'
             }
         })
+        .then((response) => response.json())
             .then(response => {
-                console.log(response.json().message)
+                console.log(response.message);
                 if (response.status == 404) {
-                    console.log('error404' + JSON.stringify(response.body.message))
+                    console.log('error404')
                     setIsContact(true);
                     setIsLoadingInv(false);
 
@@ -73,7 +74,7 @@ const Invoice = () => {
                     console.log('error 500')
                 } else {
                     console.log(response)
-                    return response.json()
+                    response.json()
                 }
             })
             .then(data => {
@@ -229,7 +230,7 @@ const Invoice = () => {
 
 const useStyles = makeStyles({
     payButton: {
-        background: '#eca107 !important',
+        background: '#3f8111 !important',
         minWidth: '94px !important',
         borderRadius: '0px !important',
         "&:hover": {
@@ -239,7 +240,7 @@ const useStyles = makeStyles({
     },
 
     downloadButton: {
-        background: '#3f8111 !important',
+        background: '#eca107 !important',
         minWidth: '94px !important',
         borderRadius: '0px !important',
         "&:hover": {
