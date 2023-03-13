@@ -61,9 +61,9 @@ const Invoice = () => {
             }
         })
             .then(response => {
-                console.log(response)
+                console.log(response.json().message)
                 if (response.status == 404) {
-                    console.log('error404')
+                    console.log('error404' + JSON.stringify(response.body.message))
                     setIsContact(true);
                     setIsLoadingInv(false);
 
